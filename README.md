@@ -5,8 +5,8 @@
 <h1 align="center">BiBox Downloader</h1>
 
 <p align="center">
-  <strong>Schulbuecher &amp; Lernmaterialien offline verfuegbar machen</strong><br/>
-  Portable Desktop-App fuer die <a href="https://bibox2.westermann.de">Westermann BiBox 2.0</a>
+  <strong>Schulbücher &amp; Lernmaterialien offline verfügbar machen</strong><br/>
+  Portable Desktop-App für die <a href="https://bibox2.westermann.de">Westermann BiBox 2.0</a>
 </p>
 
 <p align="center">
@@ -18,13 +18,28 @@
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License"/>
 </p>
 
+<p align="center">
+  <a href="https://github.com/stephanbuettig/bibox-downloader/releases/latest"><strong>Download v1.0.0</strong></a>
+</p>
+
 ---
 
 ## Was ist das?
 
-Der **BiBox Downloader** laedt Schulbuecher und Lernmaterialien aus deinem BiBox-Account herunter und speichert sie offline — als hochaufloesende PNGs, zusammengefasste PDFs und sortierte Materialien-Sammlungen. Einmal herunterladen, ueberall nutzen — ohne Internet, ohne App, ohne DRM-Einschraenkungen.
+Der **BiBox Downloader** lädt Schulbücher und Lernmaterialien aus deinem BiBox-Account herunter und speichert sie offline — als hochauflösende PNGs, zusammengefasste PDFs und sortierte Materialien-Sammlungen. Einmal herunterladen, überall nutzen — ohne Internet, ohne App, ohne DRM-Einschränkungen.
 
-> **Hinweis:** Du benoetigst einen gueltigen BiBox-Account mit lizenzierten Buechern. Dieses Tool laedt nur Inhalte herunter, fuer die du bereits eine Lizenz besitzt.
+> **Hinweis:** Du benötigst einen gültigen BiBox-Account mit lizenzierten Büchern. Dieses Tool lädt nur Inhalte herunter, für die du bereits eine Lizenz besitzt.
+
+---
+
+## Download
+
+| Plattform | Download | Größe |
+|:---:|:---:|:---:|
+| **Windows** (x64) | [BiBox-Downloader-v1.0.0-win-x64.zip](https://github.com/stephanbuettig/bibox-downloader/releases/download/v1.0.0/BiBox-Downloader-v1.0.0-win-x64.zip) | ~117 MB |
+| **Linux** (x64) | [BiBox-Downloader-v1.0.0-linux-x64.zip](https://github.com/stephanbuettig/bibox-downloader/releases/download/v1.0.0/BiBox-Downloader-v1.0.0-linux-x64.zip) | ~106 MB |
+
+> ZIP entpacken und `BiBox Downloader.exe` (Windows) bzw. `electron` (Linux) starten. Kein Installer nötig.
 
 ---
 
@@ -32,9 +47,9 @@ Der **BiBox Downloader** laedt Schulbuecher und Lernmaterialien aus deinem BiBox
 
 | Feature | Beschreibung |
 |:---:|---|
-| **Buch-Download** | Alle Seiten als hochaufloesende PNGs + automatisch generiertes PDF |
-| **Materialien-Sammlung** | Alle Arbeitsblatter, Loesungen und Zusatzmaterialien in einer einzigen PDF |
-| **PDF-Entschluesselung** | Automatische Entschluesselung geschuetzter Arbeitsblatter via Chromium |
+| **Buch-Download** | Alle Seiten als hochauflösende PNGs + automatisch generiertes PDF |
+| **Materialien-Sammlung** | Alle Arbeitsblätter, Lösungen und Zusatzmaterialien in einer einzigen PDF |
+| **PDF-Entschlüsselung** | Automatische Entschlüsselung geschützter Arbeitsblätter via Chromium |
 | **Word-Konvertierung** | DOC/DOCX-Dateien werden via MS Word oder Textextraktion zu PDF |
 | **Fortschritt & Resume** | Echtzeit-Fortschritt, Geschwindigkeitsanzeige, abgebrochene Downloads fortsetzbar |
 | **Rate Limiting** | Intelligente Drosselung (3 Verbindungen, 200ms Delay) — serverschonend |
@@ -50,7 +65,7 @@ Der **BiBox Downloader** laedt Schulbuecher und Lernmaterialien aus deinem BiBox
 2. ZIP entpacken
 3. `BiBox Downloader.exe` starten
 4. Mit deinem BiBox-Account einloggen
-5. Buch auswaehlen und herunterladen
+5. Buch auswählen und herunterladen
 
 ### Option 2: Selbst kompilieren
 
@@ -59,7 +74,7 @@ Der **BiBox Downloader** laedt Schulbuecher und Lernmaterialien aus deinem BiBox
 git clone https://github.com/stephanbuettig/bibox-downloader.git
 cd bibox-downloader
 
-# Abhaengigkeiten installieren
+# Abhängigkeiten installieren
 npm install
 
 # Entwicklungsmodus starten
@@ -69,7 +84,7 @@ npm run dev
 build.bat
 ```
 
-Die fertige App liegt anschliessend in `release/win-unpacked/`.
+Die fertige App liegt anschließend in `release/win-unpacked/`.
 
 > Detaillierte Build-Anleitung: [BUILDING.md](BUILDING.md)
 
@@ -79,9 +94,9 @@ Die fertige App liegt anschliessend in `release/win-unpacked/`.
 
 | | Voraussetzung | Hinweis |
 |:---:|---|---|
-| **Nutzer** | Windows 10/11 (64-bit) | Linux-Version verfuegbar |
-| **Nutzer** | BiBox-Account mit Lizenz | Fuer den Login |
-| **Optional** | Microsoft Word | Fuer beste DOC/DOCX-Konvertierung |
+| **Nutzer** | Windows 10/11 (64-bit) | Linux-Version verfügbar |
+| **Nutzer** | BiBox-Account mit Lizenz | Für den Login |
+| **Optional** | Microsoft Word | Für beste DOC/DOCX-Konvertierung |
 | **Entwickler** | Node.js 18+ (empfohlen: 20 LTS) | Zum Selbst-Kompilieren |
 
 ---
@@ -136,13 +151,13 @@ bibox-downloader/
 │   │   ├── download/            #   Download-Engine + Materialien
 │   │   ├── ipc/                 #   IPC-Handler (Main <-> Renderer)
 │   │   ├── logging/             #   Strukturierter Logger
-│   │   ├── pdf/                 #   PDF-Builder + Entschluesselung
+│   │   ├── pdf/                 #   PDF-Builder + Entschlüsselung
 │   │   └── storage/             #   Dateiverwaltung + JSON-Store
 │   ├── renderer/                # React 19 Frontend
 │   │   ├── components/          #   UI-Komponenten
 │   │   └── stores/              #   Zustand State Management
 │   └── shared/                  # Geteilte Typen + Utils
-├── dist/                        # Kompilierter Code (vorcompiliert)
+├── dist/                        # Kompilierter Code (vorkompiliert)
 ├── assets/                      # Icons und Bilder
 ├── build.bat                    # Windows One-Click Build
 ├── electron-builder.yml         # Build-Konfiguration
@@ -153,19 +168,19 @@ bibox-downloader/
 
 ## Technische Highlights
 
-**PDF-Entschluesselung via Chromium** — Viele BiBox-Arbeitsblatter sind mit AES-128 verschluesselt (V=4, R=4). Anstatt externe Tools wie qpdf oder Ghostscript zu verwenden, nutzt der BiBox Downloader Electrons eingebauten Chromium-PDF-Viewer: Ein unsichtbares `BrowserWindow` laedt die verschluesselte PDF, und `printToPDF()` erzeugt eine saubere, entschluesselte Kopie. Zero Dependencies.
+**PDF-Entschlüsselung via Chromium** — Viele BiBox-Arbeitsblätter sind mit AES-128 verschlüsselt (V=4, R=4). Anstatt externe Tools wie qpdf oder Ghostscript zu verwenden, nutzt der BiBox Downloader Electrons eingebauten Chromium-PDF-Viewer: Ein unsichtbares `BrowserWindow` lädt die verschlüsselte PDF, und `printToPDF()` erzeugt eine saubere, entschlüsselte Kopie. Zero Dependencies.
 
 **Magic-Byte-Erkennung** — Dateien mit unbekanntem MIME-Type (`application/octet-stream`) werden anhand ihrer ersten Bytes identifiziert: MP3, WAV, FLAC, OGG, MIDI, M4A, WebM, PDF, DOCX, PNG, JPEG, GIF — alles wird korrekt einsortiert.
 
-**Word COM Batch-Konvertierung** — DOC/DOCX-Dateien werden ueber einen einzigen Word-COM-Prozess konvertiert, mit einer Dateilisten-Methode die auch Sonderzeichen in Dateinamen (Apostrophe, Umlaute) zuverlaessig handhabt.
+**Word COM Batch-Konvertierung** — DOC/DOCX-Dateien werden über einen einzigen Word-COM-Prozess konvertiert, mit einer Dateilisten-Methode die auch Sonderzeichen in Dateinamen (Apostrophe, Umlaute) zuverlässig handhabt.
 
 > Alle Learnings und Architekturentscheidungen: [DEVELOPMENT.md](DEVELOPMENT.md)
 
 ---
 
-## Unterstuetzen
+## Unterstützen
 
-Wenn dir der BiBox Downloader gefaellt, freue ich mich ueber einen kleinen Kaffee:
+Wenn dir der BiBox Downloader gefällt, freue ich mich über einen kleinen Kaffee:
 
 <p align="center">
   <a href="http://paypal.me/stephanbuettig/10">
@@ -179,10 +194,10 @@ Wenn dir der BiBox Downloader gefaellt, freue ich mich ueber einen kleinen Kaffe
 
 Dieses Projekt steht unter der [MIT-Lizenz](LICENSE).
 
-Die heruntergeladenen Inhalte (Schulbuecher, Arbeitsblatter etc.) unterliegen dem Urheberrecht der Westermann Gruppe und duerfen nur im Rahmen der jeweiligen BiBox-Lizenz genutzt werden.
+Die heruntergeladenen Inhalte (Schulbücher, Arbeitsblätter etc.) unterliegen dem Urheberrecht der Westermann Gruppe und dürfen nur im Rahmen der jeweiligen BiBox-Lizenz genutzt werden.
 
 ---
 
 ## Haftungsausschluss
 
-Dieses Tool ist ein unabhaengiges Open-Source-Projekt und steht in keiner Verbindung zur Westermann Gruppe oder BiBox. Die Nutzung erfolgt auf eigene Verantwortung.
+Dieses Tool ist ein unabhängiges Open-Source-Projekt und steht in keiner Verbindung zur Westermann Gruppe oder BiBox. Die Nutzung erfolgt auf eigene Verantwortung.
