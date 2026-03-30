@@ -1,10 +1,10 @@
-# Entwicklerdokumentation und Learnings
+# Entwicklerdokumentation
 
-Dieses Dokument fasst die Architekturentscheidungen, gelöste Probleme und Erkenntnisse aus der Entwicklung des BiBox Downloaders zusammen. Es dient als Wissensbasis für die Weiterentwicklung.
+Dieses Dokument fasst die Architekturentscheidungen und gelösten Probleme aus der Entwicklung des BiBox Downloaders zusammen. Es dient als Wissensbasis für die Weiterentwicklung.
 
-## Architektur-Überblick
+## Architektur
 
-### Electron-Architektur (Main ↔ Renderer)
+### Electron-Architektur (Main und Renderer)
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -33,55 +33,48 @@ Dieses Dokument fasst die Architekturentscheidungen, gelöste Probleme und Erken
 
 ### Datenfluss eines Downloads
 
-1. User wählt Buch in der LibraryGrid-Komponente
-2. `download-store.ts` sendet IPC-Aufruf an Main Process
+1. Der Nutzer wählt ein Buch in der LibraryGrid-Komponente
+2. `download-store.ts` sendet einen IPC-Aufruf an den Main Process
 3. `engine.ts` orchestriert den Download:
-   a. Buchdaten von BiBox-API abrufen (inkl. ETag-Cache)
-   b. Seiten herunterladen (parallele PNG-Downloads mit Rate Limiting)
-   c. Materialien herunterladen (PDF, DOCX, DOC, Bilder, Audio)
-   d. PDF-Buch aus Seiten-PNGs zusammenbauen (`builder.ts`)
-   e. Materialien-Sammel-PDF erstellen (`materials-pdf-builder.ts`)
-4. Fortschritt wird via IPC-Events an den Renderer gestreamt
+   - Buchdaten von der BiBox-API abrufen (mit ETag-Cache)
+   - Seiten herunterladen (parallele PNG-Downloads mit Rate Limiting)
+   - Materialien herunterladen (PDF, DOCX, DOC, Bilder, Audio)
+   - PDF-Buch aus den Seiten-PNGs zusammenbauen (`builder.ts`)
+   - Materialien-Sammel-PDF erstellen (`materials-pdf-builder.ts`)
+4. Der Fortschritt wird über IPC-Events an den Renderer gestreamt
 
-## Kritische Learnings
+## Gelöste Probleme
 
 ### 1. PDF-Verschlüsselung (AES-128, V=4, R=4)
 
-**Problem**: Viele BiBox-Arbeitsblätter sind mit Owner-Password verschlüsselt. Beim Zusammenfügen der Materialien-PDF erscheinen diese als leere Seiten.
+Viele BiBox-Arbeitsblätter sind mit einem Owner-Password verschlüsselt. Beim Zusammenfügen der Materialien-PDF erscheinen diese Seiten leer.
 
-**Getestete Methoden**:
+Wir haben sechs Methoden getestet:
 
 | Methode | Ergebnis | Details |
 |---|---|---|
-| pdf-lib `ignoreEncryption: true` | Leere Seiten | Kopiert verschlüsselte Bytes, entschlüsselt nicht |
-| Byte-Manipulation (/Encrypt entfernen) | Leere Seiten | Content-Streams bleiben verschlüsselt |
-| Word COM (`Documents.Open`) | Timeout/Fehler | Word zeigt PDF-Konvertierungsdialog, hängt in Non-Interactive-Modus |
-| Word COM mit `ConfirmConversions=$false` | Berechtigungsfehler | "Autor hat Berechtigungen festgelegt, die keine Wiederverwendung erlauben" |
+| pdf-lib `ignoreEncryption: true` | Leere Seiten | Kopiert die verschlüsselten Bytes, entschlüsselt aber nicht |
+| Byte-Manipulation (/Encrypt entfernen) | Leere Seiten | Die Content-Streams bleiben verschlüsselt |
+| Word COM (`Documents.Open`) | Timeout | Word zeigt einen Konvertierungsdialog und hängt im Non-Interactive-Modus |
+| Word COM mit `ConfirmConversions=$false` | Berechtigungsfehler | Word meldet, dass der Autor die Wiederverwendung nicht erlaubt |
 | Edge Headless `--print-to-pdf` | Keine Ausgabe | Chromium meldet "Multiple targets not supported in headless mode" |
-| **Electron `BrowserWindow.loadURL` + `printToPDF`** | **Funktioniert!** | Chromium rendert die PDF nativ und gibt sie entschlüsselt aus |
+| **Electron `BrowserWindow.loadURL` + `printToPDF`** | **Funktioniert** | Chromium rendert die PDF nativ und gibt sie entschlüsselt aus |
 
-**Lösung**: `decryptPdfViaChromium()` in `materials-pdf-builder.ts`:
-- Erstellt unsichtbares `BrowserWindow` mit `plugins: true`
-- Lädt die verschlüsselte PDF via `file://`-URI
-- Wartet 2.5 Sekunden für das Rendering
-- `webContents.printToPDF()` erzeugt entschlüsseltes PDF
-- Validiert Ausgabe auf Mindestgröße (>5KB)
+Die Lösung steckt in `decryptPdfViaChromium()` in `materials-pdf-builder.ts`. Ein unsichtbares `BrowserWindow` mit `plugins: true` lädt die verschlüsselte PDF über eine `file://`-URI. Nach 2,5 Sekunden Wartezeit für das Rendering erzeugt `webContents.printToPDF()` ein entschlüsseltes PDF. Die Ausgabe wird auf eine Mindestgröße von 5 KB geprüft.
 
-**Warum das funktioniert**: Chromiums eingebauter PDF-Viewer (PDFium) kann PDFs mit leerem User-Password nativ öffnen. `printToPDF()` erzeugt eine neue, unverschlüsselte PDF aus dem gerenderten Inhalt.
+Das funktioniert, weil Chromiums eingebauter PDF-Viewer (PDFium) PDFs mit leerem User-Password nativ öffnen kann. `printToPDF()` erzeugt daraus eine neue, unverschlüsselte PDF.
 
-### 2. Word COM — Apostrophe in Dateinamen
+### 2. Apostrophe in Dateinamen (Word COM)
 
-**Problem**: Dateinamen wie `Sonata_pian'_e_forte.docx` oder `I've_got_you.docx` brechen die PowerShell-Ausführung, weil das Apostroph die PS-String-Literale beendet.
+Dateinamen wie `Sonata_pian'_e_forte.docx` brechen die PowerShell-Ausführung, weil das Apostroph den PS-String vorzeitig beendet.
 
-**Fehler im Log**: `Unerwartetes Token "_e_forte_-_Lösungen.docx'"` — das `'` im Dateinamen beendete den PS-String vorzeitig.
-
-**Lösung**: Statt Dateipfade direkt im PowerShell-Skript einzubetten, wird eine separate `_filelist.txt` geschrieben mit `inputPath|outputPath` pro Zeile. Das PS-Skript liest diese via `Get-Content -LiteralPath` und `$line.Split("|", 2)`. So werden Sonderzeichen in Dateinamen komplett vermieden.
+Statt Dateipfade direkt im PowerShell-Skript einzubetten, wird jetzt eine separate `_filelist.txt` geschrieben. Jede Zeile enthält `inputPath|outputPath`. Das PS-Skript liest diese per `Get-Content -LiteralPath` und splittet am Pipe-Zeichen. So werden Sonderzeichen in Dateinamen komplett umgangen.
 
 ### 3. Magic-Byte-Erkennung für unbekannte Dateitypen
 
-**Problem**: BiBox liefert manche Dateien als `application/octet-stream`. Ohne korrekte Erkennung wurden diese als nutzlose `.bin`-Dateien gespeichert.
+BiBox liefert manche Dateien als `application/octet-stream`. Ohne Erkennung wurden diese als nutzlose `.bin`-Dateien gespeichert.
 
-**Lösung**: `detectMimeByMagicBytes()` in `material-downloader.ts` prüft die ersten Bytes:
+`detectMimeByMagicBytes()` in `material-downloader.ts` prüft jetzt die ersten Bytes:
 
 ```
 49 44 33       → MP3 (ID3 Tag)
@@ -99,33 +92,30 @@ FF D8 FF       → JPEG
 47 49 46       → GIF
 ```
 
-Unbekannte Dateien (`'unknown'`) werden übersprungen statt als `.bin` gespeichert.
+Unbekannte Dateien werden übersprungen statt als `.bin` gespeichert.
 
-### 4. A4-Dimensionen statt Cover-Page-Pixel
+### 4. A4-Dimensionen statt Cover-Pixel
 
-**Problem**: Die Materialien-PDF verwendete die Pixel-Dimensionen des Cover-PNGs (z.B. 2244x3071 Pixel) als Seitengröße. Dadurch waren eingebettete A4-PDFs winzig.
+Die Materialien-PDF verwendete die Pixel-Dimensionen des Cover-PNGs (z.B. 2244x3071 Pixel) als Seitengröße. Dadurch waren eingebettete A4-PDFs winzig.
 
-**Lösung**: `refPageWidth`/`refPageHeight` werden immer auf A4 (595.28 x 841.89 PDF-Punkte) gesetzt, statt die Cover-Größe zu erkennen.
+Die Lösung ist einfach: `refPageWidth` und `refPageHeight` werden immer auf A4 gesetzt (595.28 × 841.89 PDF-Punkte).
 
 ### 5. PowerShell-Encoding auf Windows
 
-**Problem**: PowerShell-Skripte die von Node.js geschrieben und ausgeführt werden, müssen UTF-8 BOM + CRLF-Zeilenenden haben, damit Windows PowerShell sie korrekt parst.
+PowerShell-Skripte, die von Node.js geschrieben und ausgeführt werden, müssen UTF-8 BOM und CRLF-Zeilenenden haben. Ohne diese Kombination kann Windows PowerShell die Dateien nicht korrekt lesen.
 
-**Lösung**: Alle dynamisch generierten PS-Skripte werden mit `Buffer.from([0xEF, 0xBB, 0xBF])` (BOM) vorangestellt und mit `\r\n` (CRLF) als Zeilentrenner geschrieben.
+Alle dynamisch generierten PS-Skripte bekommen deshalb einen BOM-Header (`Buffer.from([0xEF, 0xBB, 0xBF])`) und `\r\n` als Zeilentrenner.
 
-### 6. Electron + Node.js Version Kompatibilität
+### 6. Electron und Node.js Versionsunterschiede
 
-**Wichtig**: Electron 34 bringt intern **Node.js v20.19.1** mit, auch wenn auf dem System Node.js v24 läuft. Das bedeutet:
-- **Zur Laufzeit** nutzt die App Node.js v20 Features (Electrons eingebautes Node)
-- **Beim Build** nutzt `electron-builder` das System-Node.js
-- `app-builder-bin` (Dependency von electron-builder) hat unter Node.js v24 Probleme mit NSIS-Targets
-- **Empfehlung**: Zum Bauen Node.js 20 LTS verwenden, oder nur `dir`-Target nutzen
+Electron 34 bringt intern **Node.js v20.19.1** mit, auch wenn auf dem System Node.js v24 installiert ist. Zur Laufzeit nutzt die App also Node.js v20 Features. Beim Build nutzt `electron-builder` dagegen das System-Node.js. Das `app-builder-bin`-Paket (Dependency von electron-builder) hat unter Node.js v24 Probleme mit NSIS-Targets. Zum Bauen sollte deshalb am besten Node.js 20 LTS verwendet werden, oder man nutzt nur das `dir`-Target.
 
-### 7. Rate Limiting und BiBox-API
+### 7. Rate Limiting für die BiBox-API
 
 Die BiBox-API wird mit folgenden Parametern angesprochen:
-- Max. 3 parallele Verbindungen (`p-queue`)
-- 200ms Delay zwischen Anfragen
+
+- Maximal 3 parallele Verbindungen (`p-queue`)
+- 200ms Pause zwischen Anfragen
 - ETag-basiertes Caching für API-Antworten
 - Automatische Retry-Logik bei 429/503-Fehlern
 
@@ -135,10 +125,10 @@ Diese Parameter schützen den Server und vermeiden IP-Sperren.
 
 ### Main Process (Kern-Logik)
 
-| Datei | Verantwortung |
+| Datei | Aufgabe |
 |---|---|
 | `src/main/index.ts` | App-Start, BrowserWindow, Auto-Update-Check |
-| `src/main/preload.ts` | contextBridge — sichere IPC-Brücke zum Renderer |
+| `src/main/preload.ts` | contextBridge, sichere IPC-Brücke zum Renderer |
 | `src/main/api/bibox-api.ts` | BiBox 2.0 REST-API (Buchliste, Seiten, Materialien) |
 | `src/main/api/client.ts` | HTTP-Client (undici) mit Auth-Header-Injection |
 | `src/main/api/etag-cache.ts` | ETag-basierter Response-Cache |
@@ -146,22 +136,22 @@ Diese Parameter schützen den Server und vermeiden IP-Sperren.
 | `src/main/auth/token-store.ts` | Token-Persistierung (verschlüsselt) |
 | `src/main/download/engine.ts` | Download-Orchestrator (Seiten + Materialien + PDF-Build) |
 | `src/main/download/page-downloader.ts` | Seiten-PNG-Download mit Retry |
-| `src/main/download/material-downloader.ts` | Material-Download + Magic-Byte-Erkennung |
+| `src/main/download/material-downloader.ts` | Material-Download und Magic-Byte-Erkennung |
 | `src/main/download/throttle.ts` | Rate Limiter (p-queue Wrapper) |
-| `src/main/download/checkpoint.ts` | Download-Fortschritt speichern/laden |
+| `src/main/download/checkpoint.ts` | Download-Fortschritt speichern und laden |
 | `src/main/pdf/builder.ts` | Buch-PDF aus Seiten-PNGs zusammenbauen |
-| `src/main/pdf/materials-pdf-builder.ts` | Materialien-Sammel-PDF (inkl. PDF-Entschlüsselung) |
-| `src/main/pdf/word-to-pdf-converter.ts` | DOC/DOCX → PDF via Word COM oder Textextraktion |
-| `src/main/storage/file-organizer.ts` | Datei-Ablage + MIME-Type-Mapping |
+| `src/main/pdf/materials-pdf-builder.ts` | Materialien-Sammel-PDF, inklusive Entschlüsselung |
+| `src/main/pdf/word-to-pdf-converter.ts` | DOC/DOCX zu PDF über Word COM oder Textextraktion |
+| `src/main/storage/file-organizer.ts` | Datei-Ablage und MIME-Type-Mapping |
 | `src/main/storage/disk-check.ts` | Festplattenplatz prüfen |
 | `src/main/storage/json-store.ts` | Persistenter JSON-Speicher |
-| `src/main/logging/logger.ts` | Strukturierter File+Console-Logger |
+| `src/main/logging/logger.ts` | Strukturierter File- und Console-Logger |
 
 ### Renderer (UI)
 
-| Datei | Verantwortung |
+| Datei | Aufgabe |
 |---|---|
-| `src/renderer/App.tsx` | Haupt-App-Komponente + Routing |
+| `src/renderer/App.tsx` | Haupt-App-Komponente und Routing |
 | `src/renderer/components/LoginScreen.tsx` | BiBox-Login (OAuth2) |
 | `src/renderer/components/LibraryGrid.tsx` | Buchregal-Ansicht |
 | `src/renderer/components/BookCard.tsx` | Einzelne Buchkarte |
@@ -176,8 +166,8 @@ Diese Parameter schützen den Server und vermeiden IP-Sperren.
 
 ## Tipps für die Weiterentwicklung
 
-1. **TypeScript strikt halten**: `npx tsc --noEmit` prüft alle Typen ohne zu kompilieren
-2. **Neue Dateitypen**: Magic Bytes in `material-downloader.ts` und MIME-Mapping in `file-organizer.ts` ergänzen
-3. **PDF-Entschlüsselung**: Falls künftige PDFs andere Verschlüsselung nutzen, die `decryptPdfViaChromium()`-Wartezeit (2500ms) erhöhen oder `qpdf` als Fallback einbauen
-4. **Electron-Update**: Bei Electron-Major-Updates die `BrowserWindow`-API-Kompatibilität prüfen, besonders `printToPDF()` Optionen
-5. **Linux/macOS**: Grundsätzlich plattformunabhängig, aber Word-COM-Konvertierung ist Windows-only. Auf Linux/macOS werden DOC/DOCX nur via Textextraktion konvertiert
+1. **TypeScript strikt halten:** `npx tsc --noEmit` prüft alle Typen ohne zu kompilieren
+2. **Neue Dateitypen:** Magic Bytes in `material-downloader.ts` und MIME-Mapping in `file-organizer.ts` ergänzen
+3. **PDF-Entschlüsselung:** Falls künftige PDFs andere Verschlüsselungen nutzen, die Wartezeit in `decryptPdfViaChromium()` (2500ms) erhöhen oder `qpdf` als Fallback einbauen
+4. **Electron-Update:** Bei Major-Updates die `BrowserWindow`-API-Kompatibilität prüfen, besonders die `printToPDF()`-Optionen
+5. **Linux/macOS:** Die App ist grundsätzlich plattformunabhängig, aber die Word-COM-Konvertierung funktioniert nur unter Windows. Auf Linux und macOS werden DOC/DOCX-Dateien nur per Textextraktion konvertiert

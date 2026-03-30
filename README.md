@@ -5,7 +5,7 @@
 <h1 align="center">BiBox Downloader</h1>
 
 <p align="center">
-  <strong>Schulbücher & Lernmaterialien offline verfügbar machen</strong><br/>
+  <strong>Schulbücher und Lernmaterialien offline verfügbar machen</strong><br/>
   <sub>Portable Desktop-App für die <a href="https://bibox2.westermann.de">Westermann BiBox 2.0</a></sub>
 </p>
 
@@ -28,9 +28,11 @@
 
 ## Was ist das?
 
-Der **BiBox Downloader** lädt Schulbücher und Lernmaterialien aus deinem BiBox-Account herunter und speichert sie offline — als hochauflösende PNGs, zusammengefasste PDFs und sortierte Materialien-Sammlungen. Einmal herunterladen, überall nutzen — ohne Internet, ohne App, ohne DRM-Einschränkungen.
+Der **BiBox Downloader** lädt Schulbücher und Lernmaterialien aus deinem BiBox-Account herunter und speichert sie lokal auf deinem Rechner. Die Buchseiten werden als hochauflösende PNGs gespeichert und zusätzlich als PDF zusammengefasst. Alle Arbeitsblätter, Lösungen und Zusatzmaterialien landen sortiert in einer Materialien-PDF.
 
-> **Hinweis:** Du benötigst einen gültigen BiBox-Account mit lizenzierten Büchern. Dieses Tool lädt nur Inhalte herunter, für die du bereits eine Lizenz besitzt.
+Einmal heruntergeladen kannst du alles ohne Internetverbindung nutzen.
+
+> **Hinweis:** Du benötigst einen gültigen BiBox-Account mit lizenzierten Büchern. Das Tool lädt nur Inhalte herunter, für die du bereits eine Lizenz besitzt.
 
 ---
 
@@ -59,20 +61,20 @@ Der **BiBox Downloader** lädt Schulbücher und Lernmaterialien aus deinem BiBox
 </tr>
 </table>
 
-> Kein Installer nötig. Direkt von USB-Stick oder Netzlaufwerk startbar.
+> Kein Installer nötig. Lässt sich direkt von USB-Stick oder Netzlaufwerk starten.
 
 ---
 
 ## Features
 
 <table>
-<tr><td width="30"><strong>📖</strong></td><td><strong>Buch-Download</strong> — Alle Seiten als hochauflösende PNGs + automatisch generiertes PDF</td></tr>
-<tr><td><strong>📎</strong></td><td><strong>Materialien-Sammlung</strong> — Alle Arbeitsblätter, Lösungen und Zusatzmaterialien in einer einzigen PDF</td></tr>
-<tr><td><strong>🔓</strong></td><td><strong>PDF-Entschlüsselung</strong> — Automatische Entschlüsselung geschützter Arbeitsblätter via Chromium (Zero Dependencies)</td></tr>
-<tr><td><strong>📝</strong></td><td><strong>Word → PDF</strong> — DOC/DOCX-Dateien werden via MS Word COM oder Textextraktion konvertiert</td></tr>
-<tr><td><strong>⏯️</strong></td><td><strong>Fortschritt & Resume</strong> — Echtzeit-Fortschritt, Geschwindigkeitsanzeige, abgebrochene Downloads fortsetzbar</td></tr>
-<tr><td><strong>🛡️</strong></td><td><strong>Rate Limiting</strong> — Intelligente Drosselung (3 Verbindungen, 200ms Delay) — serverschonend</td></tr>
-<tr><td><strong>💾</strong></td><td><strong>Portable</strong> — Kein Installer nötig — direkt von USB-Stick oder Netzlaufwerk startbar</td></tr>
+<tr><td width="30">📖</td><td><strong>Buch-Download</strong><br/>Alle Seiten als hochauflösende PNGs plus automatisch generiertes Gesamt-PDF</td></tr>
+<tr><td>📎</td><td><strong>Materialien-Sammlung</strong><br/>Alle Arbeitsblätter, Lösungen und Zusatzmaterialien werden in einer einzigen PDF zusammengefasst</td></tr>
+<tr><td>🔓</td><td><strong>PDF-Entschlüsselung</strong><br/>Geschützte Arbeitsblätter werden automatisch über den eingebauten Chromium-PDF-Viewer entschlüsselt, ganz ohne externe Tools</td></tr>
+<tr><td>📝</td><td><strong>Word-Konvertierung</strong><br/>DOC/DOCX-Dateien werden über MS Word COM oder alternativ per Textextraktion zu PDF konvertiert</td></tr>
+<tr><td>⏯️</td><td><strong>Fortschritt und Resume</strong><br/>Echtzeit-Fortschrittsanzeige mit Geschwindigkeit. Abgebrochene Downloads können fortgesetzt werden</td></tr>
+<tr><td>🛡️</td><td><strong>Rate Limiting</strong><br/>Maximal 3 parallele Verbindungen mit 200ms Pause zwischen den Anfragen, um den BiBox-Server zu schonen</td></tr>
+<tr><td>💾</td><td><strong>Portable</strong><br/>Kein Installer nötig. Läuft direkt vom USB-Stick oder Netzlaufwerk</td></tr>
 </table>
 
 ---
@@ -98,9 +100,9 @@ npm run dev        # Entwicklungsmodus
 build.bat          # Produktions-Build (Windows)
 ```
 
-Die fertige App liegt anschließend in `release/win-unpacked/`.
+Die fertige App liegt danach in `release/win-unpacked/`.
 
-> Detaillierte Build-Anleitung: **[BUILDING.md](BUILDING.md)**
+> Ausführliche Build-Anleitung in **[BUILDING.md](BUILDING.md)**
 
 ---
 
@@ -111,7 +113,7 @@ Die fertige App liegt anschließend in `release/win-unpacked/`.
 | **Nutzer** | Windows 10/11 (64-bit) | Linux-Version verfügbar |
 | **Nutzer** | BiBox-Account mit Lizenz | Für den Login |
 | **Optional** | Microsoft Word | Für beste DOC/DOCX-Konvertierung |
-| **Entwickler** | Node.js 18+ (empfohlen: 20 LTS) | Zum Selbst-Kompilieren |
+| **Entwickler** | Node.js 18+ (empfohlen 20 LTS) | Zum Selbst-Kompilieren |
 
 ---
 
@@ -171,7 +173,7 @@ bibox-downloader/
 │   │   ├── components/          #   UI-Komponenten
 │   │   └── stores/              #   Zustand State Management
 │   └── shared/                  # Geteilte Typen + Utils
-├── dist/                        # Kompilierter Code (vorkompiliert)
+├── dist/                        # Vorkompilierter Code
 ├── assets/                      # Icons und Bilder
 ├── build.bat                    # Windows One-Click Build
 ├── electron-builder.yml         # Build-Konfiguration
@@ -185,27 +187,29 @@ bibox-downloader/
 ## Technische Highlights
 
 <details>
-<summary><strong>🔓 PDF-Entschlüsselung via Chromium</strong></summary>
+<summary><strong>🔓 PDF-Entschlüsselung über Chromium</strong></summary>
 
-Viele BiBox-Arbeitsblätter sind mit AES-128 verschlüsselt (V=4, R=4). Nach dem Testen von 6 verschiedenen Methoden (pdf-lib, Byte-Manipulation, Word COM, Edge Headless) hat sich Electrons eingebauter Chromium-PDF-Viewer als einzige funktionierende Lösung erwiesen: Ein unsichtbares `BrowserWindow` lädt die verschlüsselte PDF, und `printToPDF()` erzeugt eine saubere, entschlüsselte Kopie — komplett ohne externe Tools.
+Viele BiBox-Arbeitsblätter sind mit AES-128 verschlüsselt (V=4, R=4). Wir haben sechs verschiedene Methoden getestet, darunter pdf-lib, Byte-Manipulation, Word COM und Edge Headless. Keine davon hat funktioniert.
+
+Die Lösung ist Electrons eingebauter Chromium-PDF-Viewer. Ein unsichtbares `BrowserWindow` lädt die verschlüsselte PDF und `printToPDF()` erzeugt daraus eine entschlüsselte Kopie. Externe Tools wie qpdf oder Ghostscript werden nicht benötigt.
 
 </details>
 
 <details>
 <summary><strong>🔍 Magic-Byte-Erkennung</strong></summary>
 
-Dateien mit unbekanntem MIME-Type (`application/octet-stream`) werden anhand ihrer ersten Bytes identifiziert: MP3, WAV, FLAC, OGG, MIDI, M4A, WebM, PDF, DOCX, PNG, JPEG, GIF — alles wird korrekt einsortiert. Unbekannte Formate werden übersprungen.
+BiBox liefert manche Dateien als `application/octet-stream` ohne erkennbaren Dateityp. Die App prüft die ersten Bytes jeder Datei und erkennt dadurch MP3, WAV, FLAC, OGG, MIDI, M4A, WebM, PDF, DOCX, PNG, JPEG und GIF. Unbekannte Formate werden übersprungen.
 
 </details>
 
 <details>
-<summary><strong>📄 Word COM Batch-Konvertierung</strong></summary>
+<summary><strong>📄 Word-Konvertierung per Batch</strong></summary>
 
-DOC/DOCX-Dateien werden über einen einzigen Word-COM-Prozess konvertiert, mit einer Dateilisten-Methode die auch Sonderzeichen in Dateinamen (Apostrophe, Umlaute) zuverlässig handhabt.
+DOC- und DOCX-Dateien werden in einem einzigen Word-COM-Prozess konvertiert. Statt die Dateipfade direkt in PowerShell-Befehle einzubetten, werden sie über eine Textdatei übergeben. So funktioniert die Konvertierung auch bei Sonderzeichen wie Apostrophen oder Umlauten im Dateinamen.
 
 </details>
 
-> Alle Learnings und Architekturentscheidungen: **[DEVELOPMENT.md](DEVELOPMENT.md)**
+> Alle Learnings und Architekturentscheidungen findest du in **[DEVELOPMENT.md](DEVELOPMENT.md)**
 
 ---
 
@@ -225,7 +229,7 @@ Wenn dir der BiBox Downloader gefällt, freue ich mich über einen kleinen Kaffe
 
 Dieses Projekt steht unter der [MIT-Lizenz](LICENSE).
 
-Die heruntergeladenen Inhalte (Schulbücher, Arbeitsblätter etc.) unterliegen dem Urheberrecht der Westermann Gruppe und dürfen nur im Rahmen der jeweiligen BiBox-Lizenz genutzt werden.
+Die heruntergeladenen Inhalte (Schulbücher, Arbeitsblätter usw.) unterliegen dem Urheberrecht der Westermann Gruppe und dürfen nur im Rahmen der jeweiligen BiBox-Lizenz genutzt werden.
 
 ## Haftungsausschluss
 
