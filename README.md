@@ -1,25 +1,27 @@
 <p align="center">
-  <img src="assets/icons/icon.ico" alt="BiBox Downloader" width="80"/>
+  <img src="assets/icons/icon.png" alt="BiBox Downloader" width="100"/>
 </p>
 
 <h1 align="center">BiBox Downloader</h1>
 
 <p align="center">
-  <strong>Schulbücher &amp; Lernmaterialien offline verfügbar machen</strong><br/>
-  Portable Desktop-App für die <a href="https://bibox2.westermann.de">Westermann BiBox 2.0</a>
+  <strong>Schulbücher & Lernmaterialien offline verfügbar machen</strong><br/>
+  <sub>Portable Desktop-App für die <a href="https://bibox2.westermann.de">Westermann BiBox 2.0</a></sub>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.0-blue?style=flat-square" alt="Version"/>
-  <img src="https://img.shields.io/badge/electron-34-47848F?style=flat-square&logo=electron" alt="Electron 34"/>
-  <img src="https://img.shields.io/badge/react-19-61DAFB?style=flat-square&logo=react" alt="React 19"/>
-  <img src="https://img.shields.io/badge/typescript-5.7-3178C6?style=flat-square&logo=typescript" alt="TypeScript"/>
-  <img src="https://img.shields.io/badge/platform-windows%20%7C%20linux-lightgrey?style=flat-square" alt="Platform"/>
-  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License"/>
+  <a href="https://github.com/stephanbuettig/bibox-downloader/releases/latest"><img src="https://img.shields.io/github/v/release/stephanbuettig/bibox-downloader?style=flat-square&label=Download&color=28a745" alt="Latest Release"/></a>&nbsp;
+  <img src="https://img.shields.io/github/downloads/stephanbuettig/bibox-downloader/total?style=flat-square&color=blue" alt="Downloads"/>&nbsp;
+  <img src="https://img.shields.io/badge/electron-34-47848F?style=flat-square&logo=electron" alt="Electron 34"/>&nbsp;
+  <img src="https://img.shields.io/badge/react-19-61DAFB?style=flat-square&logo=react" alt="React 19"/>&nbsp;
+  <img src="https://img.shields.io/badge/typescript-5.7-3178C6?style=flat-square&logo=typescript" alt="TypeScript"/>&nbsp;
+  <img src="https://img.shields.io/github/license/stephanbuettig/bibox-downloader?style=flat-square" alt="License"/>
 </p>
 
 <p align="center">
-  <a href="https://github.com/stephanbuettig/bibox-downloader/releases/latest"><strong>Download v1.0.0</strong></a>
+  <a href="https://github.com/stephanbuettig/bibox-downloader/releases/latest">
+    <img src="https://img.shields.io/badge/%E2%AC%87%EF%B8%8F_Download-Windows_%7C_Linux-28a745?style=for-the-badge" alt="Download"/>
+  </a>
 </p>
 
 ---
@@ -34,26 +36,44 @@ Der **BiBox Downloader** lädt Schulbücher und Lernmaterialien aus deinem BiBox
 
 ## Download
 
-| Plattform | Download | Größe |
-|:---:|:---:|:---:|
-| **Windows** (x64) | [BiBox-Downloader-v1.0.0-win-x64.zip](https://github.com/stephanbuettig/bibox-downloader/releases/download/v1.0.0/BiBox-Downloader-v1.0.0-win-x64.zip) | ~117 MB |
-| **Linux** (x64) | [BiBox-Downloader-v1.0.0-linux-x64.zip](https://github.com/stephanbuettig/bibox-downloader/releases/download/v1.0.0/BiBox-Downloader-v1.0.0-linux-x64.zip) | ~106 MB |
+<table>
+<tr>
+<td align="center" width="50%">
 
-> ZIP entpacken und `BiBox Downloader.exe` (Windows) bzw. `electron` (Linux) starten. Kein Installer nötig.
+**Windows** (x64)
+
+[BiBox-Downloader-v1.0.0-win-x64.zip](https://github.com/stephanbuettig/bibox-downloader/releases/download/v1.0.0/BiBox-Downloader-v1.0.0-win-x64.zip)
+
+~117 MB · ZIP entpacken · `BiBox Downloader.exe` starten
+
+</td>
+<td align="center" width="50%">
+
+**Linux** (x64)
+
+[BiBox-Downloader-v1.0.0-linux-x64.zip](https://github.com/stephanbuettig/bibox-downloader/releases/download/v1.0.0/BiBox-Downloader-v1.0.0-linux-x64.zip)
+
+~106 MB · ZIP entpacken · `./electron` starten
+
+</td>
+</tr>
+</table>
+
+> Kein Installer nötig. Direkt von USB-Stick oder Netzlaufwerk startbar.
 
 ---
 
 ## Features
 
-| Feature | Beschreibung |
-|:---:|---|
-| **Buch-Download** | Alle Seiten als hochauflösende PNGs + automatisch generiertes PDF |
-| **Materialien-Sammlung** | Alle Arbeitsblätter, Lösungen und Zusatzmaterialien in einer einzigen PDF |
-| **PDF-Entschlüsselung** | Automatische Entschlüsselung geschützter Arbeitsblätter via Chromium |
-| **Word-Konvertierung** | DOC/DOCX-Dateien werden via MS Word oder Textextraktion zu PDF |
-| **Fortschritt & Resume** | Echtzeit-Fortschritt, Geschwindigkeitsanzeige, abgebrochene Downloads fortsetzbar |
-| **Rate Limiting** | Intelligente Drosselung (3 Verbindungen, 200ms Delay) — serverschonend |
-| **Portable** | Kein Installer — direkt von USB-Stick oder Netzlaufwerk startbar |
+<table>
+<tr><td width="30"><strong>📖</strong></td><td><strong>Buch-Download</strong> — Alle Seiten als hochauflösende PNGs + automatisch generiertes PDF</td></tr>
+<tr><td><strong>📎</strong></td><td><strong>Materialien-Sammlung</strong> — Alle Arbeitsblätter, Lösungen und Zusatzmaterialien in einer einzigen PDF</td></tr>
+<tr><td><strong>🔓</strong></td><td><strong>PDF-Entschlüsselung</strong> — Automatische Entschlüsselung geschützter Arbeitsblätter via Chromium (Zero Dependencies)</td></tr>
+<tr><td><strong>📝</strong></td><td><strong>Word → PDF</strong> — DOC/DOCX-Dateien werden via MS Word COM oder Textextraktion konvertiert</td></tr>
+<tr><td><strong>⏯️</strong></td><td><strong>Fortschritt & Resume</strong> — Echtzeit-Fortschritt, Geschwindigkeitsanzeige, abgebrochene Downloads fortsetzbar</td></tr>
+<tr><td><strong>🛡️</strong></td><td><strong>Rate Limiting</strong> — Intelligente Drosselung (3 Verbindungen, 200ms Delay) — serverschonend</td></tr>
+<tr><td><strong>💾</strong></td><td><strong>Portable</strong> — Kein Installer nötig — direkt von USB-Stick oder Netzlaufwerk startbar</td></tr>
+</table>
 
 ---
 
@@ -61,7 +81,7 @@ Der **BiBox Downloader** lädt Schulbücher und Lernmaterialien aus deinem BiBox
 
 ### Option 1: Fertige App herunterladen (empfohlen)
 
-1. Lade den neuesten Release herunter: [**Releases**](https://github.com/stephanbuettig/bibox-downloader/releases)
+1. **[Neuesten Release herunterladen](https://github.com/stephanbuettig/bibox-downloader/releases/latest)**
 2. ZIP entpacken
 3. `BiBox Downloader.exe` starten
 4. Mit deinem BiBox-Account einloggen
@@ -70,23 +90,17 @@ Der **BiBox Downloader** lädt Schulbücher und Lernmaterialien aus deinem BiBox
 ### Option 2: Selbst kompilieren
 
 ```bash
-# Repository klonen
 git clone https://github.com/stephanbuettig/bibox-downloader.git
 cd bibox-downloader
-
-# Abhängigkeiten installieren
 npm install
-
-# Entwicklungsmodus starten
-npm run dev
-
-# Oder: Produktions-Build (Windows)
-build.bat
+npm run dev        # Entwicklungsmodus
+# oder
+build.bat          # Produktions-Build (Windows)
 ```
 
 Die fertige App liegt anschließend in `release/win-unpacked/`.
 
-> Detaillierte Build-Anleitung: [BUILDING.md](BUILDING.md)
+> Detaillierte Build-Anleitung: **[BUILDING.md](BUILDING.md)**
 
 ---
 
@@ -124,9 +138,8 @@ Die fertige App liegt anschließend in `release/win-unpacked/`.
 └─────────────────────────────────────────────────────┘
 ```
 
----
-
-## Technologie-Stack
+<details>
+<summary><strong>Technologie-Stack</strong></summary>
 
 | Komponente | Technologie | Version |
 |---|---|---|
@@ -138,9 +151,10 @@ Die fertige App liegt anschließend in `release/win-unpacked/`.
 | HTTP | undici | 6 |
 | Build | electron-builder | 25 |
 
----
+</details>
 
-## Projektstruktur
+<details>
+<summary><strong>Projektstruktur</strong></summary>
 
 ```
 bibox-downloader/
@@ -164,17 +178,34 @@ bibox-downloader/
 └── package.json
 ```
 
+</details>
+
 ---
 
 ## Technische Highlights
 
-**PDF-Entschlüsselung via Chromium** — Viele BiBox-Arbeitsblätter sind mit AES-128 verschlüsselt (V=4, R=4). Anstatt externe Tools wie qpdf oder Ghostscript zu verwenden, nutzt der BiBox Downloader Electrons eingebauten Chromium-PDF-Viewer: Ein unsichtbares `BrowserWindow` lädt die verschlüsselte PDF, und `printToPDF()` erzeugt eine saubere, entschlüsselte Kopie. Zero Dependencies.
+<details>
+<summary><strong>🔓 PDF-Entschlüsselung via Chromium</strong></summary>
 
-**Magic-Byte-Erkennung** — Dateien mit unbekanntem MIME-Type (`application/octet-stream`) werden anhand ihrer ersten Bytes identifiziert: MP3, WAV, FLAC, OGG, MIDI, M4A, WebM, PDF, DOCX, PNG, JPEG, GIF — alles wird korrekt einsortiert.
+Viele BiBox-Arbeitsblätter sind mit AES-128 verschlüsselt (V=4, R=4). Nach dem Testen von 6 verschiedenen Methoden (pdf-lib, Byte-Manipulation, Word COM, Edge Headless) hat sich Electrons eingebauter Chromium-PDF-Viewer als einzige funktionierende Lösung erwiesen: Ein unsichtbares `BrowserWindow` lädt die verschlüsselte PDF, und `printToPDF()` erzeugt eine saubere, entschlüsselte Kopie — komplett ohne externe Tools.
 
-**Word COM Batch-Konvertierung** — DOC/DOCX-Dateien werden über einen einzigen Word-COM-Prozess konvertiert, mit einer Dateilisten-Methode die auch Sonderzeichen in Dateinamen (Apostrophe, Umlaute) zuverlässig handhabt.
+</details>
 
-> Alle Learnings und Architekturentscheidungen: [DEVELOPMENT.md](DEVELOPMENT.md)
+<details>
+<summary><strong>🔍 Magic-Byte-Erkennung</strong></summary>
+
+Dateien mit unbekanntem MIME-Type (`application/octet-stream`) werden anhand ihrer ersten Bytes identifiziert: MP3, WAV, FLAC, OGG, MIDI, M4A, WebM, PDF, DOCX, PNG, JPEG, GIF — alles wird korrekt einsortiert. Unbekannte Formate werden übersprungen.
+
+</details>
+
+<details>
+<summary><strong>📄 Word COM Batch-Konvertierung</strong></summary>
+
+DOC/DOCX-Dateien werden über einen einzigen Word-COM-Prozess konvertiert, mit einer Dateilisten-Methode die auch Sonderzeichen in Dateinamen (Apostrophe, Umlaute) zuverlässig handhabt.
+
+</details>
+
+> Alle Learnings und Architekturentscheidungen: **[DEVELOPMENT.md](DEVELOPMENT.md)**
 
 ---
 
@@ -195,8 +226,6 @@ Wenn dir der BiBox Downloader gefällt, freue ich mich über einen kleinen Kaffe
 Dieses Projekt steht unter der [MIT-Lizenz](LICENSE).
 
 Die heruntergeladenen Inhalte (Schulbücher, Arbeitsblätter etc.) unterliegen dem Urheberrecht der Westermann Gruppe und dürfen nur im Rahmen der jeweiligen BiBox-Lizenz genutzt werden.
-
----
 
 ## Haftungsausschluss
 
