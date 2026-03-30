@@ -1,0 +1,56 @@
+appId: de.bibox-downloader
+productName: BiBox Downloader
+copyright: Copyright © 2026
+
+directories:
+  output: release
+  buildResources: assets
+
+files:
+  - dist/**/*
+  - assets/**/*
+
+win:
+  # Build: dir target only — NSIS/portable require app-builder-bin which has
+  # compatibility issues with Node.js v24. Use dir + run from win-unpacked.
+  # To enable NSIS installer: switch to Node.js v20 LTS, delete node_modules,
+  # run npm install, then uncomment nsis/portable targets below.
+  target:
+    - dir
+    # - nsis
+    # - portable
+  icon: assets/icons/icon.ico
+  # Skip code signing entirely — avoids winCodeSign download which fails
+  # on non-admin Windows due to macOS symlinks in the 7z archive.
+  verifyUpdateCodeSignature: false
+  signAndEditExecutable: false
+  rfc3161TimeStampServer: null
+
+# Uncomment when using Node.js v20 LTS for NSIS/portable builds:
+# nsis:
+#   oneClick: true
+#   perMachine: false
+#   artifactName: BiBox-Downloader-${version}-setup.exe
+#   installerIcon: assets/icons/icon.ico
+#   uninstallerIcon: assets/icons/icon.ico
+#   deleteAppDataOnUninstall: false
+#   allowToChangeInstallationDirectory: false
+#
+# portable:
+#   artifactName: BiBox-Downloader-${version}-portable.exe
+#   unpackDirName: BiBox-Downloader
+#   requestExecutionLevel: user
+
+linux:
+  target: AppImage
+  icon: assets/icons/icon.png
+  category: Utility
+
+mac:
+  target: dmg
+  icon: assets/icons/icon.icns
+
+# No asar — simpler, more portable
+asar: false
+
+# electronVersion: omitted — auto-detected from node_modules/electron

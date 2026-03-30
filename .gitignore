@@ -1,0 +1,49 @@
+# =====================================================
+# BiBox Downloader — .gitignore
+# =====================================================
+
+# --- Node.js ---
+node_modules/
+npm-debug.log*
+
+# --- Build Output ---
+# dist/ is included — contains pre-compiled v1.0 ready to use
+release/
+
+# --- Release Assets (upload via GitHub Releases, not in git) ---
+releases/
+
+# --- Downloaded Books (user data) ---
+# Each downloaded book creates a folder like:
+#   "Buchtitel (ISBN 978-3-14-XXXXXX-X)/"
+*ISBN*978*/
+
+# --- Logs ---
+*.log
+logs/
+
+# --- Temp / Test ---
+decrypt-test-output/
+.tmp-pdf-convert/
+test-*.mjs
+test-*.ps1
+test-*.pdf
+
+# --- IDE ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# --- Review / internal docs ---
+REVIEW*.docx
+
+# --- Environment ---
+.env
+.env.*
