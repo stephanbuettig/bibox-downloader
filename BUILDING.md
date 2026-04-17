@@ -8,8 +8,8 @@ Diese Anleitung beschreibt, wie du den BiBox Downloader selbst kompilierst.
 |---|---|---|
 | Node.js | 18+ (empfohlen 20 LTS) | Node 24 funktioniert, allerdings mit Einschränkungen bei NSIS-Builds |
 | npm | 9+ | Wird mit Node.js mitgeliefert |
-| Windows | 10/11 (64-bit) | Für Build und Ausführung |
-| MS Word | Optional | Nur für die DOC/DOCX-Konvertierung zur Laufzeit nötig |
+| Betriebssystem | Windows 10/11, macOS 10.12+, Linux (x64) | Jeder Host kann nur für das eigene OS bauen |
+| MS Word | Optional, nur Windows | DOC/DOCX-Konvertierung; auf Mac/Linux wird automatisch der `word-extractor`-Fallback genutzt |
 
 ## Schnell-Build (Windows)
 
@@ -64,6 +64,39 @@ npx electron-builder --win --dir
 
 Erstellt die portable App in `release/win-unpacked/`.
 
+## Schnell-Build (macOS)
+
+Auf macOS (getestet auf Apple Silicon, arm64):
+
+```bash
+npm install
+npm run dist:mac
+```
+
+Ergebnis: `release/BiBox Downloader-1.0.0-arm64.dmg` (~103 MB). Die DMG lässt sich per Doppelklick mounten; die App wird dann in den Programme-Ordner gezogen.
+
+Hinweise:
+
+- Code-Signing wird übersprungen, da kein Apple Developer Zertifikat konfiguriert ist. Beim ersten Start zeigt macOS deshalb eine Gatekeeper-Warnung; via Rechtsklick → „Öffnen" bestätigen oder in den Systemeinstellungen freigeben.
+- Für einen Intel-Build (x64) zusätzlich `--x64` übergeben: `npx electron-builder --mac dmg --x64`.
+- Die DOC/DOCX-Konvertierung nutzt auf macOS automatisch den `word-extractor`-Fallback, da MS Word COM nur unter Windows verfügbar ist.
+
+## Schnell-Build (Linux)
+
+```bash
+npm install
+npm run dist:linux
+```
+
+Ergebnis: `release/BiBox Downloader-1.0.0.AppImage`. Ausführbar machen und direkt starten:
+
+```bash
+chmod +x release/BiBox\ Downloader-1.0.0.AppImage
+./release/BiBox\ Downloader-1.0.0.AppImage
+```
+
+Für AppImage wird `libfuse2` auf dem Zielsystem benötigt (auf Ubuntu 22.04+ als `libfuse2t64` paketiert).
+
 ## Build-Targets
 
 | Target | Befehl | Ergebnis | Status |
@@ -71,8 +104,9 @@ Erstellt die portable App in `release/win-unpacked/`.
 | Directory | `npm run dist` | `release/win-unpacked/` | Funktioniert |
 | NSIS Installer | `npm run dist:win` | `.exe` Setup | Erfordert Node 20 LTS |
 | Portable .exe | (in electron-builder.yml aktivieren) | Single `.exe` | Erfordert Node 20 LTS |
-| Linux AppImage | `npm run dist:linux` | `.AppImage` | Nicht getestet |
-| macOS DMG | `npm run dist:mac` | `.dmg` | Nicht getestet |
+| Linux AppImage | `npm run dist:linux` | `.AppImage` | Funktioniert |
+| macOS DMG (arm64) | `npm run dist:mac` | `.dmg` | Funktioniert (getestet auf macOS 25.1) |
+| macOS DMG (x64) | `npx electron-builder --mac dmg --x64` | `.dmg` | Funktioniert |
 
 ### Hinweis zu NSIS/Portable Builds
 
@@ -92,6 +126,25 @@ Error: EPERM: operation not permitted, symlink
 ```
 
 Dieser Fehler tritt auf, wenn der Windows-Entwicklermodus nicht aktiviert ist. Der `dir`-Target-Build funktioniert trotzdem, da kein Code-Signing verwendet wird. Um den Fehler zu vermeiden, kannst du unter Windows-Einstellungen den Entwicklermodus aktivieren.
+
+### macOS: Icon muss als .icns vorliegen
+
+electron-builder erwartet für den Mac-Target zwingend `assets/icons/icon.icns` (konfiguriert in `electron-builder.yml`). Fehlt die Datei oder ist sie kleiner als 512×512, bricht der Build mit einem Go-Panic im Icon-Converter ab. Die `.icns` lässt sich auf macOS aus der vorhandenen `icon.png` erzeugen:
+
+```bash
+mkdir icon.iconset
+sips -z 16 16     assets/icons/icon.png --out icon.iconset/icon_16x16.png
+sips -z 32 32     assets/icons/icon.png --out icon.iconset/icon_16x16@2x.png
+sips -z 32 32     assets/icons/icon.png --out icon.iconset/icon_32x32.png
+sips -z 64 64     assets/icons/icon.png --out icon.iconset/icon_32x32@2x.png
+sips -z 128 128   assets/icons/icon.png --out icon.iconset/icon_128x128.png
+sips -z 256 256   assets/icons/icon.png --out icon.iconset/icon_128x128@2x.png
+sips -z 256 256   assets/icons/icon.png --out icon.iconset/icon_256x256.png
+sips -z 512 512   assets/icons/icon.png --out icon.iconset/icon_256x256@2x.png
+sips -z 512 512   assets/icons/icon.png --out icon.iconset/icon_512x512.png
+sips -z 1024 1024 assets/icons/icon.png --out icon.iconset/icon_512x512@2x.png
+iconutil -c icns icon.iconset -o assets/icons/icon.icns
+```
 
 ### node_modules Korruption
 
