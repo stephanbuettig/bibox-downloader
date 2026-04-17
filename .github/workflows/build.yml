@@ -1,0 +1,95 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: ${{ matrix.display_name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            display_name: Build Windows (x64)
+            artifact_path: release/win-unpacked
+            artifact_name: bibox-downloader-windows-x64
+          - os: macos-latest
+            display_name: Build macOS (arm64)
+            artifact_path: release/*.dmg
+            artifact_name: bibox-downloader-macos-arm64
+          - os: ubuntu-latest
+            display_name: Build Linux (x64)
+            artifact_path: release/*.AppImage
+            artifact_name: bibox-downloader-linux-x64
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Ensure macOS icon.icns exists
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          if [ ! -f assets/icons/icon.icns ]; then
+            echo "::notice::icon.icns missing — generating from icon.png"
+            width=$(sips -g pixelWidth assets/icons/icon.png | awk '/pixelWidth:/{print $2}')
+            if [ "${width:-0}" -lt 1024 ]; then
+              sips -z 1024 1024 assets/icons/icon.png --out assets/icons/icon.png
+            fi
+            mkdir -p assets/icons/icon.iconset
+            sips -z 16 16     assets/icons/icon.png --out assets/icons/icon.iconset/icon_16x16.png
+            sips -z 32 32     assets/icons/icon.png --out assets/icons/icon.iconset/icon_16x16@2x.png
+            sips -z 32 32     assets/icons/icon.png --out assets/icons/icon.iconset/icon_32x32.png
+            sips -z 64 64     assets/icons/icon.png --out assets/icons/icon.iconset/icon_32x32@2x.png
+            sips -z 128 128   assets/icons/icon.png --out assets/icons/icon.iconset/icon_128x128.png
+            sips -z 256 256   assets/icons/icon.png --out assets/icons/icon.iconset/icon_128x128@2x.png
+            sips -z 256 256   assets/icons/icon.png --out assets/icons/icon.iconset/icon_256x256.png
+            sips -z 512 512   assets/icons/icon.png --out assets/icons/icon.iconset/icon_256x256@2x.png
+            sips -z 512 512   assets/icons/icon.png --out assets/icons/icon.iconset/icon_512x512.png
+            sips -z 1024 1024 assets/icons/icon.png --out assets/icons/icon.iconset/icon_512x512@2x.png
+            iconutil -c icns assets/icons/icon.iconset -o assets/icons/icon.icns
+            rm -rf assets/icons/icon.iconset
+          fi
+
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        # Nutzt 'dir'-Target, weil NSIS/Portable in electron-builder.yml
+        # auskommentiert sind. 'npm run dist:win' wuerde --win portable
+        # erzwingen und daran scheitern.
+        run: |
+          npm run build
+          npx electron-builder --win dir
+
+      - name: Build (macOS)
+        if: runner.os == 'macOS'
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npm run dist:mac
+
+      - name: Build (Linux)
+        if: runner.os == 'Linux'
+        run: npm run dist:linux
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.artifact_path }}
+          retention-days: 14
+          if-no-files-found: error
