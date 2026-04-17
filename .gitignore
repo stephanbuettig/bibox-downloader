@@ -18,6 +18,12 @@ releases/
 #   "Buchtitel (ISBN 978-3-14-XXXXXX-X)/"
 *ISBN*978*/
 
+# --- Runtime / user data ---
+# Nutzerspezifische Einstellungen (Output-Pfad, Download-Optionen)
+bibox-settings.json
+# ETag-Cache und andere Zwischenspeicher
+cache/
+
 # --- Logs ---
 *.log
 logs/
